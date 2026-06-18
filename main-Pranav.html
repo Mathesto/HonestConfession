@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Honest Confession</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body>
+    <header class="main-header">
+      <h1>Honest Confession</h1>
+      <p>The things we never said.</p>
+    </header>
+
+    <div class="controls-container">
+      <input
+        type="text"
+        id="searchInput"
+        onkeyup="filterConfessions()"
+        placeholder="Search a name (e.g. 'Sarah')"
+        class="search-input"
+      />
+      <button id="loginBtn" onclick="openAuthModal()" class="btn-primary">
+        Login
+      </button>
+      <button onclick="openModal()" class="btn-primary">
+        Write a Confession
+      </button>
+    </div>
+
+    <main id="confessionGrid" class="confession-grid"></main>
+
+    <div id="modal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <h2>New Confession</h2>
+
+        <label class="input-label">To:</label>
+        <input
+          id="toInput"
+          type="text"
+          placeholder="Name or Initial"
+          class="form-input"
+        />
+
+        <label class="input-label">Message:</label>
+        <textarea
+          id="messageInput"
+          placeholder="I still remember the way you..."
+          class="form-textarea"
+        ></textarea>
+
+        <button
+          type="button"
+          onclick="makePoetic()"
+          id="aiBtn"
+          style="
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: inherit;
+          "
+        >
+          ✨ Make it Poetic
+        </button>
+
+        <label class="input-label">Card Color:</label>
+        <div class="color-picker">
+          <button
+            onclick="setColor('#bfdbfe')"
+            style="background-color: #bfdbfe"
+          ></button>
+          <button
+            onclick="setColor('#fecaca')"
+            style="background-color: #fecaca"
+          ></button>
+          <button
+            onclick="setColor('#bbf7d0')"
+            style="background-color: #bbf7d0"
+          ></button>
+          <button
+            onclick="setColor('#fef08a')"
+            style="background-color: #fef08a"
+          ></button>
+          <button
+            onclick="setColor('#ddd6fe')"
+            style="background-color: #ddd6fe"
+          ></button>
+        </div>
+
+        <div class="modal-actions">
+          <button onclick="closeModal()" class="btn-cancel">Cancel</button>
+          <button onclick="saveConfession()" class="btn-post">
+            Post Anonymously
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="authModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <h2 id="authTitle">Login</h2>
+        <input
+          id="authEmail"
+          type="email"
+          placeholder="Email"
+          class="form-input"
+        />
+        <input
+          id="authPassword"
+          type="password"
+          placeholder="Password"
+          class="form-input"
+        />
+
+        <div class="modal-actions">
+          <button onclick="handleAuth()" id="authSubmitBtn" class="btn-post">
+            Login
+          </button>
+          <button onclick="closeAuthModal()" class="btn-cancel">Cancel</button>
+        </div>
+        <p style="text-align: center; margin-top: 1rem; font-size: 0.8rem">
+          <a href="#" id="authToggleLink" onclick="toggleAuthMode()">
+            Don't have an account? Sign Up
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+  
