@@ -43,6 +43,15 @@
           class="form-input"
         />
 
+        <!-- Added the "From" input field option here -->
+        <label class="input-label">From (Optional / Leave blank for anonymous):</label>
+        <input
+          id="fromInput"
+          type="text"
+          placeholder="Your name or alias..."
+          class="form-input"
+        />
+
         <label class="input-label">Message:</label>
         <textarea
           id="messageInput"
@@ -98,7 +107,7 @@
         <div class="modal-actions">
           <button onclick="closeModal()" class="btn-cancel">Cancel</button>
           <button onclick="saveConfession()" class="btn-post">
-            Post Anonymously
+            Post
           </button>
         </div>
       </div>
@@ -137,4 +146,3 @@
     <script src="script.js"></script>
   </body>
 </html>
-  
