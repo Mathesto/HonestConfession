@@ -272,50 +272,7 @@ function handleLogout() {
   updateUI();
 }
 
-// 8. MAKE POETIC AI CALL
-async function makePoetic() {
-  const msgInput = document.getElementById("messageInput");
-  const aiBtn = document.getElementById("aiBtn");
-  const originalText = msgInput.value.trim();
-
-  if (!originalText) {
-    alert("Write a little something first!");
-    return;
-  }
-
-  aiBtn.innerText = "🪄 Casting a spell...";
-  aiBtn.disabled = true;
-
-  try {
-    const response = await fetch("/api/poetic", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text: originalText }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Server returned status ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (data && data.poeticText) {
-      msgInput.value = data.poeticText.trim();
-    }
-  } catch (err) {
-    console.error("AI Error:", err);
-    alert(
-      "Something went wrong with the connection. We'll verify the key configuration once we go live!",
-    );
-  } finally {
-    aiBtn.innerText = "✨ Make it Poetic";
-    aiBtn.disabled = false;
-  }
-}
-
-// 9. ADMIN TOGGLE PIN SERVER QUERY
+// 8. ADMIN TOGGLE PIN SERVER QUERY
 async function togglePin(id, currentPinnedStatus) {
   try {
     const response = await fetch('/api/confessions', {
