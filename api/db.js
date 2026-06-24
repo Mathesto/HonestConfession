@@ -1,14 +1,8 @@
-import { createPool } from "@vercel/postgres";
+import postgres from 'postgres';
 
-// This function creates a pool connection to your Vercel database automatically
-export async function queryDatabase(sql, params = []) {
-  const pool = createPool();
+const connectionString = process.env.DATABASE_URL;
 
-  try {
-    const { rows } = await pool.query(sql, params);
-    return rows;
-  } catch (error) {
-    console.error("Database query failed:", error);
-    throw error;
-  }
-}
+// Disable SSL checking for Neon if needed, or enforce it securely
+const sql = postgres(connectionString, { ssl: 'require' });
+
+export default sql;
