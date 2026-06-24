@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         contents: [{
           parts: [{
-            text: `Rewrite the following confession text to make it deeply emotional, poetic, and beautiful while maintaining its core meaning and initials. Keep it relatively concise so it fits perfectly on a card: "${text}"`
+            text: `Rewrite the following confession text to make it deeply emotional, poetic, and beautiful while maintaining its core meaning. Keep it relatively concise so it fits perfectly on a card: "${text}"`
           }]
         }]
       })
@@ -33,16 +33,13 @@ export default async function handler(req, res) {
     const data = await response.json();
     
     if (!response.ok) {
-      console.error("Gemini API error details:", data);
-      throw new Error(data.error?.message || 'Failed to generate poetic text');
+      return res.status(500).json({ error: data.error?.message || 'Failed to generate poetic text' });
     }
 
     const poeticText = data.candidates?.[0]?.content?.parts?.[0]?.text || text;
-
     return res.status(200).json({ poeticText: poeticText.trim() });
 
   } catch (error) {
-    console.error("Backend AI Error:", error);
     return res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }
