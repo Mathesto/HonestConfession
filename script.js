@@ -21,9 +21,9 @@ function setColor(color) {
 // 1. FETCH ALL CONFESSIONS FROM THE NEW BACKEND
 async function fetchConfessions() {
   try {
-    const response = await fetch("/api/confessions");
-    if (!response.ok) throw new Error("Failed to fetch data");
-
+    const response = await fetch('/api/confessions');
+    if (!response.ok) throw new Error('Failed to fetch data');
+    
     const data = await response.json();
     renderConfessions(data);
   } catch (err) {
@@ -42,20 +42,20 @@ async function saveConfession() {
   }
 
   try {
-    const response = await fetch("/api/confessions", {
-      method: "POST",
+    const response = await fetch('/api/confessions', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ to: to, msg: msg, color: selectedColor }),
+      body: JSON.stringify({ to: to, msg: msg, color: selectedColor })
     });
 
-    if (!response.ok) throw new Error("Failed to post confession");
+    if (!response.ok) throw new Error('Failed to post confession');
 
     closeModal();
     toInput.value = "";
     messageInput.value = "";
-    fetchConfessions();
+    fetchConfessions(); 
   } catch (err) {
     alert(err.message);
   }
@@ -66,7 +66,7 @@ async function renderConfessions(data) {
   if (!data) return;
 
   // Check the local session to see if you are logged in as admin
-  const userRaw = localStorage.getItem("currentUser");
+  const userRaw = localStorage.getItem('currentUser');
   const user = userRaw ? JSON.parse(userRaw) : null;
   const isAdmin = user && user.isAdmin === true;
 
@@ -95,12 +95,12 @@ async function deletePost(postId) {
   if (confirm("Are you sure you want to delete this spam?")) {
     try {
       const response = await fetch(`/api/confessions?id=${postId}`, {
-        method: "DELETE",
+        method: 'DELETE'
       });
 
-      if (!response.ok) throw new Error("Failed to delete message.");
+      if (!response.ok) throw new Error('Failed to delete message.');
 
-      fetchConfessions();
+      fetchConfessions(); 
     } catch (err) {
       alert(err.message);
     }
@@ -110,11 +110,11 @@ async function deletePost(postId) {
 // 5. CLIENT SIDE SEARCHING / FILTERING
 function filterConfessions() {
   const query = searchInput.value.trim().toLowerCase();
-  const cards = document.querySelectorAll(".confession-card");
+  const cards = document.querySelectorAll('.confession-card');
 
-  cards.forEach((card) => {
-    const toText = card.querySelector(".card-to").innerText.toLowerCase();
-    const msgText = card.querySelector(".card-msg").innerText.toLowerCase();
+  cards.forEach(card => {
+    const toText = card.querySelector('.card-to').innerText.toLowerCase();
+    const msgText = card.querySelector('.card-msg').innerText.toLowerCase();
 
     if (toText.includes(query) || msgText.includes(query)) {
       card.style.display = "flex";
@@ -157,31 +157,32 @@ async function handleAuth() {
     return;
   }
 
-  const action = isSignUpMode ? "signup" : "login";
+  const action = isSignUpMode ? 'signup' : 'login';
 
   try {
-    const response = await fetch("/api/auth", {
-      method: "POST",
+    const response = await fetch('/api/auth', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ action, email, password }),
+      body: JSON.stringify({ action, email, password })
     });
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.error || "Authentication failed");
+      throw new Error(result.error || 'Authentication failed');
     }
 
     alert(result.message);
     closeAuthModal();
 
-    if (action === "login" && result.user) {
-      localStorage.setItem("currentUser", JSON.stringify(result.user));
+    if (action === 'login' && result.user) {
+      localStorage.setItem('currentUser', JSON.stringify(result.user));
     }
 
     updateUI();
+
   } catch (err) {
     console.error("Auth Error:", err);
     alert(err.message);
@@ -190,9 +191,9 @@ async function handleAuth() {
 
 // 7. USER SESSION TRACKER
 function updateUI() {
-  const userRaw = localStorage.getItem("currentUser");
+  const userRaw = localStorage.getItem('currentUser');
   const user = userRaw ? JSON.parse(userRaw) : null;
-
+  
   const loginBtn = document.getElementById("loginBtn");
 
   if (user) {
@@ -204,11 +205,11 @@ function updateUI() {
     loginBtn.onclick = openAuthModal;
   }
 
-  fetchConfessions();
+  fetchConfessions(); 
 }
 
 function handleLogout() {
-  localStorage.removeItem("currentUser");
+  localStorage.removeItem('currentUser');
   alert("Logged out!");
   updateUI();
 }
