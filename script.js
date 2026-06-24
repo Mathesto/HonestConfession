@@ -112,7 +112,7 @@ async function renderConfessions(data) {
               </div>
               <p class="card-msg" style="margin-top: 0.5rem;">${post.msg}</p>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
-                  <p class="card-id">Confession #${post.id}</p>
+                  <div></div> <!-- Keeps the action items pushed cleanly to the right side -->
                   <div style="display: flex; gap: 0.5rem; align-items: center;">
                       ${isAdmin ? `
                         <button onclick="togglePin(${post.id}, ${post.is_pinned})" style="background:none; border:none; cursor:pointer; font-size: 16px;" title="${post.is_pinned ? 'Unpin' : 'Pin'}">
