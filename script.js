@@ -336,5 +336,9 @@ async function togglePin(id, currentPinnedStatus) {
   }
 }
 
-// INITIAL STARTUP CALLS ON PAGE LOAD
 updateUI();
+
+// AUTOMATIC REAL-TIME POLLING (Checks for new confessions every 15 seconds)
+setInterval(() => {
+  fetchConfessions();
+}, 15000);
