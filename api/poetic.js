@@ -19,17 +19,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    // We use the Gemini API key stored securely in your Vercel Environment Variables
-    const apiKey = process.env.GEMINI_API_KEY;
+    // Updated to look for your new variable name: GEMINI_API_KEY2
+    const apiKey = process.env.GEMINI_API_KEY2;
     
     if (!apiKey) {
-      // Fallback message so your UI doesn't crash if the key isn't added yet
       return res.status(200).json({ 
-        poeticText: `${text}\n\n(A silent echo follows... Please configure your GEMINI_API_KEY in Vercel to activate the magic!)` 
+        poeticText: `${text}\n\n(Backend configuration error: GEMINI_API_KEY2 could not be read by Vercel.)` 
       });
     }
 
-    // Call the Gemini API directly via fetch to keep things serverless-lightweight
+    // Call the Gemini API directly via fetch
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: {
