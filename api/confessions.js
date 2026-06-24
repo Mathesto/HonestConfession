@@ -3,7 +3,6 @@ import sql from './db.js';
 export default async function handler(req, res) {
   const { method } = req;
 
-  // Add standard CORS headers so your frontend browser doesn't block the request
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -29,17 +28,17 @@ export default async function handler(req, res) {
 
       const cardColor = color || '#bfdbfe';
 
-      // Cleaned up query format for Vercel's parsing engine
+      // This explicit multi-line binding structures columns safely away from the reserved 'TO' keyword
       const newPost = await sql`
-        INSERT INTO confessions (${sql('to')}, ${sql('msg')}, ${sql('color')})
+        INSERT INTO confessions ("to", msg, color)
         VALUES (${to}, ${msg}, ${cardColor})
-        RETURNING *
+        RETURNING id, "to", msg, color, created_at
       `;
 
       return res.status(201).json(newPost[0]);
     }
 
-    // 3. DELETE A CONFESSION (ADMIN ONLY)
+    // 3. DELETE A CONFESSION
     if (method === 'DELETE') {
       const { id } = req.query;
       if (!id) return res.status(400).json({ error: 'Missing confession ID' });
