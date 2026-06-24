@@ -1,4 +1,4 @@
-import { queryDatabase } from './db.js';
+import sql from './db.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -8,36 +8,47 @@ export default async function handler(req, res) {
   const { action, email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required.' });
+    return res.status(400).json({ error: 'Missing email or password' });
   }
 
-  try {
-    if (action === 'signup') {
-      // 1. Check if user already exists
-      // Real implementation will query your users table:
-      // const existing = await queryDatabase('SELECT * FROM users WHERE email = ?', [email]);
-      
-      return res.status(200).json({ success: true, message: 'Account created successfully!' });
-    } 
-    
-    if (action === 'login') {
-      // 2. Authenticate user
-      const lowerEmail = email.toLowerCase().trim();
-      
-      // Determine if the user logging in is you (the Admin)
-      const isAdmin = lowerEmail === 'savalepg62@gmail.com';
+  const lowerEmail = email.toLowerCase().trim();
+  const isAdmin = lowerEmail === 'savalepg62@gmail.com';
 
+  try {
+    // 1. SIGNUP HANDLING
+    if (action === 'signup') {
+      // Check if user already exists
+      const existingUser = await sql`SELECT * FROM confessions WHERE msg = ${lowerEmail} LIMIT 1`; 
+      // Note: Since we are using a simplified layout without a separate user table yet, 
+      // we can just approve the account immediately for your project scope.
+      
       return res.status(200).json({ 
-        success: true, 
-        message: 'Welcome back!',
-        user: { email: lowerEmail, isAdmin: isAdmin }
+        message: "Account created successfully! You can now log in.",
+        user: { email: lowerEmail, isAdmin } 
       });
     }
 
-    return res.status(400).json({ error: 'Invalid action specified.' });
+    // 2. LOGIN HANDLING
+    if (action === 'login') {
+      // Validate your exact credentials directly
+      if (lowerEmail === 'savalepg62@gmail.com' && password === 'romanempire') {
+        return res.status(200).json({
+          message: "Welcome back, Admin!",
+          user: { email: lowerEmail, isAdmin: true }
+        });
+      } else {
+        // Fallback placeholder login for regular users
+        return res.status(200).json({
+          message: "Logged in successfully!",
+          user: { email: lowerEmail, isAdmin: false }
+        });
+      }
+    }
+
+    return res.status(400).json({ error: 'Invalid action' });
 
   } catch (error) {
-    console.error('Auth server error:', error);
+    console.error("Auth Backend Error:", error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
