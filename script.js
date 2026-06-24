@@ -61,7 +61,7 @@ async function saveConfession() {
   }
 }
 
-// 3. RENDER THE CARDS AND CHECK ADMIN RIGHT AWAY
+// 3. RENDER THE CARDS WITH ADMIN PIN CONTROLS
 async function renderConfessions(data) {
   if (!data) return;
 
@@ -73,12 +73,24 @@ async function renderConfessions(data) {
   grid.innerHTML = data
     .map(
       (post) => `
-        <div class="confession-card" style="background-color: ${post.color}">
-            <p class="card-to">To: ${post.to}</p>
-            <p class="card-msg">${post.msg}</p>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="confession-card" style="background-color: ${post.color}; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding-bottom: 0.5rem;">
+                <p class="card-to">To: ${post.to}</p>
+                ${post.is_pinned ? `<span style="font-size: 10px; font-weight: bold; background: black; color: white; padding: 2px 6px; border-radius: 4px;">📌 PINNED</span>` : ""}
+            </div>
+            <p class="card-msg" style="margin-top: 0.5rem;">${post.msg}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
                 <p class="card-id">Confession #${post.id}</p>
-                ${isAdmin ? `<button onclick="deletePost(${post.id})" style="background:none; border:none; color:#ef4444; cursor:pointer; display:flex; align-items:center;" title="Delete Post"><i data-lucide="trash-2" style="width:18px; height:18px;"></i></button>` : ""}
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    ${isAdmin ? `
+                      <button onclick="togglePin(${post.id}, ${post.is_pinned})" style="background:none; border:none; cursor:pointer; font-size: 16px;" title="${post.is_pinned ? 'Unpin' : 'Pin'}">
+                        ${post.is_pinned ? '📍' : '📌'}
+                      </button>
+                      <button onclick="deletePost(${post.id})" style="background:none; border:none; color:#ef4444; cursor:pointer; display:flex; align-items:center;" title="Delete Post">
+                        <i data-lucide="trash-2" style="width:18px; height:18px;"></i>
+                      </button>
+                    ` : ""}
+                </div>
             </div>
         </div>
     `,
@@ -254,6 +266,27 @@ async function makePoetic() {
   } finally {
     aiBtn.innerText = "✨ Make it Poetic";
     aiBtn.disabled = false;
+  }
+}
+
+// 9. ADMIN TOGGLE PIN SERVER QUERY
+async function togglePin(id, currentPinnedStatus) {
+  try {
+    const response = await fetch('/api/confessions', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id, is_pinned: !currentPinnedStatus }),
+    });
+
+    if (response.ok) {
+      fetchConfessions(); 
+    } else {
+      alert('Failed to update pin status');
+    }
+  } catch (error) {
+    console.error('Pinning Error:', error);
   }
 }
 
